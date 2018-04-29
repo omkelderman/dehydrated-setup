@@ -1,0 +1,17 @@
+transip:
+    nameserver: ns0.transip.net
+    username: omkelderman
+    key-file: /etc/dehydrated/transip-key.pem
+
+cloudflare:
+    nameserver: clark.ns.cloudflare.com
+    email: some@email.com
+    token: secret
+
+sleep:
+    initial: 3
+    retry: 30
+
+domains:
+    example.com: transip
+    example.org: cloudflare

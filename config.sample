@@ -1,0 +1,11 @@
+CA="https://acme-v02.api.letsencrypt.org/directory"
+#CA="https://acme-staging-v02.api.letsencrypt.org/directory"
+CHALLENGETYPE="dns-01"
+BASEDIR=$SCRIPTDIR
+HOOK="${BASEDIR}/../hook.sh"
+HOOK_CHAIN=yes
+CONTACT_EMAIL=""
+DOMAINS_TXT="/etc/dehydrated/domains.txt"
+CERTDIR="/etc/dehydrated/certs"
+ACCOUNTDIR="/etc/dehydrated/accounts"
+CHAINCACHE="/etc/dehydrated/chains"
