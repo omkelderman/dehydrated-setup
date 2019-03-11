@@ -1,17 +1,35 @@
-transip:
-    nameserver: ns0.transip.net
-    username: omkelderman
-    key-file: /etc/dehydrated/transip-key.pem
-
-cloudflare:
-    nameserver: clark.ns.cloudflare.com
-    email: some@email.com
-    token: secret
-
 sleep:
     initial: 3
     retry: 30
+    max-retries: 20
+
+providers:
+    transip-1:
+        type: transip
+        nameserver: ns0.transip.net
+        config:
+            username: someone
+            key-file: /etc/dehydrated/transip-key.pem
+    cloudflare-1:
+        type: cloudflare
+        nameserver: clark.ns.cloudflare.com
+        config:
+            email: some@email.com
+            token: secret
+    do-1:
+        type: digital-ocean
+        nameserver: ns1.digitalocean.com
+        config:
+            bearer-token: atoken
+    do-2and3:
+        type: digital-ocean
+        nameserver: ns1.digitalocean.com
+        config:
+            bearer-token: anothertoken
 
 domains:
-    example.com: transip
-    example.org: cloudflare
+    example.com: transip-1
+    example.org: cloudflare-1
+    example1.net: do-1
+    example2.net: do-2and3
+    example3.net: do-2and3

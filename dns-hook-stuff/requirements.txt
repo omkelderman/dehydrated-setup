@@ -1,3 +1,4 @@
 cloudflare
 git+https://github.com/benkonrath/transip-api
 git+https://github.com/yaml/pyyaml.git
+requests
