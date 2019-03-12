@@ -6,13 +6,12 @@ It contains some config for dehydrated to use, a ready to use hook script and a 
 This project is mainly used as a thing for mysef, but if anyone out there happens to stumble on this and wanted to use it, I'm not gonna stop you :wink:. Feel free to ask questions!
 
 ## Guide for myself on what to do on a new server, aka first-run/install:
-* `sudo apt-get install dnsutils python3 python3-venv`
-* clonse this repo (recursive!)
-* run the setup.sh file
+* clone this repo (recursive!)
+* run the setup.sh file (as root)
 * specify letsencrypt notify email in `/etc/dehydrated/config`
 * Fill in `/etc/dehydrated/dns-config.yml` according to the details at the end of this document
 * fill in `/etc/dehydrated/domains.txt`
-* Add the following to `/etc/cron.daily/dehydrated`:
+* Add the following to `/etc/cron.daily/dehydrated` (and make it executable):
   ```
   #!/bin/sh
   

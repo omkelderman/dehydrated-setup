@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# install dependencies
+apt-get install dnsutils python3 python3-venv
+
 # init config
 mkdir /etc/dehydrated
 mkdir /etc/dehydrated/hooks
