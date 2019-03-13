@@ -14,8 +14,8 @@ def load_config():
 CONFIG = load_config()
 
 class AcmeDnsClient(ABC):
-    def __init__(self, authoritative_name_server):
-        self.authoritative_name_server = authoritative_name_server
+    def __init__(self, authoritative_name_servers):
+        self.authoritative_name_servers = authoritative_name_servers
         self.names_added = []
 
     def queue_add(self, domain, name, challenge):
@@ -45,7 +45,7 @@ class AcmeDnsClient(ABC):
         if len(self.names_added) == 0:
             return
 
-        print('check if records have been propagated on %s' % self.authoritative_name_server)
+        print('check if records have been propagated on %s' % ', '.join(self.authoritative_name_servers))
         retry_seconds = CONFIG['sleep']['retry']
         max_retries = CONFIG['sleep']['max-retries']
         for entry in self.names_added:
@@ -55,27 +55,29 @@ class AcmeDnsClient(ABC):
                 exists = self.check_domain_has_propagated(domain, challenge)
                 if exists:
                     # yay, we found it, lets continue to next one and break out of the check look
-                    print('TXT record "%s" has been found for %s' % (challenge, domain))
+                    print('TXT record "%s" for %s has been seen on all authoritative nameservers!' % (challenge, domain))
                     break
                 else:
                     if count >= max_retries:
-                        print('TXT record "%s" for %s has not been found yet, max retries has been reached. Adding failed!' % (challenge, domain))
+                        print('TXT record "%s" for %s is not seen on all authoritative nameservers yet, max retries has been reached. Adding failed!' % (challenge, domain))
                         return False
 
-                    print('TXT record "%s" for %s has not been found yet, waiting %d sec and trying again...' % (challenge, domain, retry_seconds))
+                    print('TXT record "%s" for %s is not seen on all authoritative nameservers yet, waiting %d sec and trying again...' % (challenge, domain, retry_seconds))
                     sleep(retry_seconds)
                     count += 1
 
         return True
 
     def check_domain_has_propagated(self, domain, challenge):
-        dns_result = subprocess.check_output(['dig', '+short', 'TXT', domain, '@'+self.authoritative_name_server], universal_newlines=True)
-        return ('"%s"' % challenge) in dns_result.split('\n')
-
+        for auth_name_server in self.authoritative_name_servers:
+            dns_result = subprocess.check_output(['dig', '+short', 'TXT', domain, '@'+auth_name_server], universal_newlines=True)
+            if not ('"%s"' % challenge) in dns_result.split('\n'):
+                return False
+        return True
 
 class CloudflareAcmeDnsClient(AcmeDnsClient):
-    def __init__(self, authoritative_name_server, config):
-        super().__init__(authoritative_name_server)
+    def __init__(self, authoritative_name_servers, config):
+        super().__init__(authoritative_name_servers)
         self.zone_ids = {}
         self.dns_records_for_zone_cache = {}
         self.add_queue = []
@@ -115,10 +117,9 @@ class CloudflareAcmeDnsClient(AcmeDnsClient):
         for d in self.remove_queue:
             self.cf.zones.dns_records.delete(d['zone_id'], d['record_id'])
 
-
 class TransIpAcmeDnsClient(AcmeDnsClient):
-    def __init__(self, authoritative_name_server, config):
-        super().__init__(authoritative_name_server)
+    def __init__(self, authoritative_name_servers, config):
+        super().__init__(authoritative_name_servers)
         self.tid = TransIpDomainService(config['username'], config['key-file'])
         self.dns_records = {}
 
@@ -153,8 +154,8 @@ class TransIpAcmeDnsClient(AcmeDnsClient):
             self.tid.set_dns_entries(domain, self.dns_records[domain])
 
 class DigitalOceanDnsClient(AcmeDnsClient):
-    def __init__(self, authoritative_name_server, config):
-        super().__init__(authoritative_name_server)
+    def __init__(self, authoritative_name_servers, config):
+        super().__init__(authoritative_name_servers)
         self.custom_api_request_headers = {'Authorization': 'Bearer ' + config['bearer-token']}
         self.dns_records_for_domain_cache = {}
         self.add_queue = []    # {domain: xxx, name: subdomain or @, data: challenge}
@@ -207,11 +208,11 @@ class DigitalOceanDnsClient(AcmeDnsClient):
             r = requests.get(url, headers=self.custom_api_request_headers)
             if r.status_code != 200:
                 raise ValueError('error retrieving dns records')
-            jsonData = r.json()
-            for record in jsonData['domain_records']:
+            json_data = r.json()
+            for record in json_data['domain_records']:
                 result.append(record)
-            if 'pages' in jsonData['links'] and 'next' in jsonData['links']['pages']:
-                url = jsonData['links']['pages']['next']
+            if 'pages' in json_data['links'] and 'next' in json_data['links']['pages']:
+                url = json_data['links']['pages']['next']
             else:
                 break
         
@@ -228,18 +229,18 @@ class DigitalOceanDnsClient(AcmeDnsClient):
         if r.status_code != 204:
             raise ValueError('error while deleting dns record')
 
-def init_provider(providerName):
-    if CONFIG['providers'][providerName]:
-        providerType = CONFIG['providers'][providerName]['type']
-        nameserver = CONFIG['providers'][providerName]['nameserver']
-        config = CONFIG['providers'][providerName]['config']
+def init_provider(provider_name):
+    if CONFIG['providers'][provider_name]:
+        providerType = CONFIG['providers'][provider_name]['type']
+        nameservers = CONFIG['providers'][provider_name]['nameservers']
+        config = CONFIG['providers'][provider_name]['config']
 
         if providerType == 'transip':
-            return TransIpAcmeDnsClient(nameserver, config)
+            return TransIpAcmeDnsClient(nameservers, config)
         if providerType == 'cloudflare':
-            return CloudflareAcmeDnsClient(nameserver, config)
+            return CloudflareAcmeDnsClient(nameservers, config)
         if providerType == 'digital-ocean':
-            return DigitalOceanDnsClient(nameserver, config)
+            return DigitalOceanDnsClient(nameservers, config)
 
         raise ValueError('provider types misconfigured :(')
     
@@ -249,15 +250,15 @@ PROVIDERS = {}
 def get_profider(name):
     for d in CONFIG['domains']:
         if name == d or name.endswith('.' + d):
-            providerName = CONFIG['domains'][d]
-            if not providerName in PROVIDERS:
+            provider_name = CONFIG['domains'][d]
+            if not provider_name in PROVIDERS:
                 # init provider
-                print('Init and get provider %s for base domain %s' % (providerName, d))
-                p = init_provider(providerName)
-                PROVIDERS[providerName] = p
+                print('Init and get provider %s for base domain %s' % (provider_name, d))
+                p = init_provider(provider_name)
+                PROVIDERS[provider_name] = p
             else:
-                print('Get loaded provider %s for base domain %s' % (providerName, d))
-                p = PROVIDERS[providerName]
+                print('Get loaded provider %s for base domain %s' % (provider_name, d))
+                p = PROVIDERS[provider_name]
             return (d, p)
 
     raise ValueError('domain not found :(')

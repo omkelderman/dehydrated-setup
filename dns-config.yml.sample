@@ -6,24 +6,35 @@ sleep:
 providers:
     transip-1:
         type: transip
-        nameserver: ns0.transip.net
+        nameservers:
+            - ns0.transip.net
+            - ns1.transip.nl
+            - ns2.transip.eu
         config:
             username: someone
             key-file: /etc/dehydrated/transip-key.pem
     cloudflare-1:
         type: cloudflare
-        nameserver: clark.ns.cloudflare.com
+        nameservers:
+            - clark.ns.cloudflare.com
+            - maria.ns.cloudflare.com
         config:
             email: some@email.com
             token: secret
     do-1:
         type: digital-ocean
-        nameserver: ns1.digitalocean.com
+        nameservers:
+            - ns1.digitalocean.com
+            - ns2.digitalocean.com
+            - ns3.digitalocean.com
         config:
             bearer-token: atoken
     do-2and3:
         type: digital-ocean
-        nameserver: ns1.digitalocean.com
+        nameservers:
+            - ns1.digitalocean.com
+            - ns2.digitalocean.com
+            - ns3.digitalocean.com
         config:
             bearer-token: anothertoken
 
