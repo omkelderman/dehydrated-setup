@@ -1,4 +1,4 @@
-cloudflare
-git+https://github.com/benkonrath/transip-api
-git+https://github.com/yaml/pyyaml.git
-requests
+cloudflare~=2.3.0
+transip~=2.0.0
+pyyaml~=5.1.1
+requests~=2.22.0
