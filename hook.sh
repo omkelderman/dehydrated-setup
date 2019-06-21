@@ -11,5 +11,5 @@ elif [[ "${HANDLER}" =~ ^(deploy_challenge|clean_challenge)$ ]]; then
   . venv/bin/activate
 
   # execute it owowowowo
-  python run.py "$HANDLER" "$@"
+  python run-challange-hook.py "$HANDLER" "$@"
 fi
