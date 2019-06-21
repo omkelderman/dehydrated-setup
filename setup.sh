@@ -2,7 +2,7 @@
 set -e
 
 # install dependencies
-apt-get install dnsutils python3 python3-venv
+apt-get install dnsutils python3 python3-venv curl
 
 # init config
 mkdir /etc/dehydrated

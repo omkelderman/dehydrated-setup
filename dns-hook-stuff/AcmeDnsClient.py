@@ -54,14 +54,14 @@ class AcmeDnsClient(ABC):
                 exists = self.check_domain_has_propagated(domain, challenge)
                 if exists:
                     # yay, we found it, lets continue to next one and break out of the check look
-                    print('TXT record "%s" for %s has been seen on all authoritative nameservers!' % (challenge, domain))
+                    print('TXT record "%s" for %s has been seen on all configured nameservers!' % (challenge, domain))
                     break
                 else:
                     if count >= self.max_retries:
-                        print('TXT record "%s" for %s is not seen on all authoritative nameservers yet, max retries has been reached. Adding failed!' % (challenge, domain))
+                        print('TXT record "%s" for %s is not seen on all configured nameservers yet, max retries has been reached. Adding failed!' % (challenge, domain))
                         return False
 
-                    print('TXT record "%s" for %s is not seen on all authoritative nameservers yet, waiting %d sec and trying again...' % (challenge, domain, self.retry_seconds))
+                    print('TXT record "%s" for %s is not seen on all configured nameservers yet, waiting %d sec and trying again...' % (challenge, domain, self.retry_seconds))
                     sleep(self.retry_seconds)
                     count += 1
 
