@@ -7,7 +7,7 @@ from AcmeDnsClient import get_client_class
 import TransIPClient
 import CloudflareClient
 import DigitalOceanClient
-
+import OvhClient
 
 def load_yaml_file(file_path):
     with open(file_path, 'r') as stream:

@@ -10,7 +10,7 @@ def get_client_class(name):
     if name in CLIENTS:
         return CLIENTS[name]
     else:
-        raise ValueError('provider types misconfigured :(')
+        raise ValueError('provider types misconfigured :(, cannot find ' + name)
 
 class AcmeDnsClient(ABC):
     def __init__(self, authoritative_name_servers, sleep_config):
