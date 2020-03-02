@@ -37,6 +37,16 @@ providers:
             - ns3.digitalocean.com
         config:
             bearer-token: anothertoken
+    ovh-1:
+        type: ovh
+        nameservers:
+            - ns103.ovh.net
+            - dns103.ovh.net
+        config:
+            endpoint: ovh-eu
+            application_key: a-app-key
+            application_secret: a-app-secret
+            consumer_key: a-consumer-key
 
 domains:
     example.com: transip-1
@@ -44,3 +54,4 @@ domains:
     example1.net: do-1
     example2.net: do-2and3
     example3.net: do-2and3
+    some-other-domain.how: ovh-1

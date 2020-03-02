@@ -38,6 +38,7 @@ In the `dns-config.yml` config file are the following settings:
     - `transip`
     - `cloudflare`
     - `digital-ocean`
+    - `ovh`
   * `nameserver`: the auhoritive nameserver used by this dns provider
   * `config`: extra opties different per type, usually used for authentication, see sample files for what is being used
 * `domains`: a list of base domains being used and from which provider they are, use one of the self-named entries of the provider list above
