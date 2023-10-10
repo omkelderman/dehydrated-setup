@@ -1,5 +1,4 @@
-cloudflare~=2.3.0
-transip~=2.0.0
-pyyaml~=5.1.1
-requests~=2.22.0
-ovh~=0.5.0
+cloudflare~=2.12.4
+pyyaml~=6.0.1
+requests~=2.31.0
+ovh~=1.1.0

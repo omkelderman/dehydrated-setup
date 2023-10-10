@@ -4,15 +4,6 @@ sleep:
     max-retries: 20
 
 providers:
-    transip-1:
-        type: transip
-        nameservers:
-            - ns0.transip.net
-            - ns1.transip.nl
-            - ns2.transip.eu
-        config:
-            username: someone
-            key-file: /etc/dehydrated/transip-key.pem
     cloudflare-1:
         type: cloudflare
         nameservers:
@@ -49,7 +40,7 @@ providers:
             consumer_key: a-consumer-key
 
 domains:
-    example.com: transip-1
+    example.com: cloudflare-1
     example.org: cloudflare-1
     example1.net: do-1
     example2.net: do-2and3

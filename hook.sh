@@ -8,7 +8,7 @@ if [[ "${HANDLER}" =~ ^(deploy_cert|deploy_ocsp|unchanged_cert|invalid_challenge
 elif [[ "${HANDLER}" =~ ^(deploy_challenge|clean_challenge)$ ]]; then
   # go to the dir with all the fancy stuff and load venv
   cd "$BASEDIR/../dns-hook-stuff"
-  . venv/bin/activate
+  . .venv/bin/activate
 
   # execute it owowowowo
   python run.py "$HANDLER" "$@"

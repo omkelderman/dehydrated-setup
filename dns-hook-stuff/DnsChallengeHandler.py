@@ -4,7 +4,6 @@ from time import sleep
 # import all the implementations, gotta list them one by one,
 # havent figure out a way to do that automatically
 from AcmeDnsClient import get_client_class
-import TransIPClient
 import CloudflareClient
 import DigitalOceanClient
 import OvhClient

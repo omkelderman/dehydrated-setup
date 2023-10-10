@@ -1,7 +1,9 @@
 import sys
+import os
 from DnsChallengeHandler import DnsChallengeHandler
 
-DNS_CONFIG_FILE_LOCATION = '/etc/dehydrated/dns-config.yml'
+DNS_CONFIG_FILENAME = 'dns-config.yml'
+DNS_CONFIG_FILE_LOCATION = os.path.join(os.path.dirname(os.environ['CONFIG']), DNS_CONFIG_FILENAME)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or (sys.argv[1] != 'deploy_challenge' and sys.argv[1] != 'clean_challenge') or ((len(sys.argv)-2)%3)!=0 :
