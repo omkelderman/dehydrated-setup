@@ -1,7 +1,7 @@
 # Dehydrated setup for my server
 This is some random shit I made to make my life easier when managing lets encrypt certs on my server using the dns-01 challenge type.
 
-It contains some config for dehydrated to use, a ready to use hook script and a python script for calling the dns api of Cloudflare or TransIP depending on the domain.
+It contains some config for dehydrated to use, a ready to use hook script and a python script for calling the dns api of supported provides (see below) depending on the domain.
 
 This project is mainly used as a thing for mysef, but if anyone out there happens to stumble on this and wanted to use it, I'm not gonna stop you :wink:. Feel free to ask questions!
 
@@ -35,7 +35,6 @@ In the `dns-config.yml` config file are the following settings:
   * `max-retries`: the max amount of retries before the program fails
 * `providers`: the dns providers to use for the domains, each entry has a self picked name and then the following properties:
   * `type`: one of the following strings, which are the implemented apis
-    - `transip`
     - `cloudflare`
     - `digital-ocean`
     - `ovh`
