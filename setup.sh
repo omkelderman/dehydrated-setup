@@ -23,14 +23,14 @@ touch "$CONFIG_DIR/domains.txt"
 echo " => $CONFIG_DIR has been setup"
 
 # setup python stuff in the dns hooks stuff dir
-echo " => Setup python venv and install python requirements for hook scripts"
+echo " => Setup python venv"
 cd dns-hook-stuff
 python3 -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
-deactivate
 cd ..
-echo " => python venv and requirements have been setup"
+echo " => python venv has been setup"
+
+# run the update python deps script to install dependencies
+./update-python-deps.sh
 
 # lets do a reminder cuz why not xd
 echo "  ====================================================================================="
