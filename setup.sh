@@ -22,15 +22,8 @@ chmod 600 "$CONFIG_DIR/dns-config.yml" # it might contain secret stuff, so lets 
 touch "$CONFIG_DIR/domains.txt"
 echo " => $CONFIG_DIR has been setup"
 
-# setup python stuff in the dns hooks stuff dir
-echo " => Setup python venv"
-cd dns-hook-stuff
-python3 -m venv .venv
-cd ..
-echo " => python venv has been setup"
-
-# run the update python deps script to install dependencies
-./update-python-deps.sh
+# run the setup venv script to setup venv and install python dependencies
+./setup-venv.sh
 
 # lets do a reminder cuz why not xd
 echo "  ====================================================================================="
